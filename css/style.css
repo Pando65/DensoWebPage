@@ -1,7 +1,9 @@
+/*CONENEDORES*/
 body {
 	background-color: #171719;
-	color: #FCFCFC;
+	color: #DBDBDB;
 	font-family: sans-serif;
+	font-size: 15px;
 }
 
 #wrapper {
@@ -12,6 +14,12 @@ body {
 	box-shadow: 0px 0px 10px 5px rgba(0,0,0,.2);
 	margin-top: 30px;
 }
+
+#content {
+	padding: 20px 15px;
+}
+
+/*HEADER*/
 #header span{
 	font-size: 3em;
 	font-family: serif;
@@ -19,6 +27,7 @@ body {
 	letter-spacing: 15px;
 	margin: 34px 0px 5px 10px;
 	display: block;
+	color: #FCFCFC;
 }
 
 #logo {
@@ -29,9 +38,11 @@ body {
 
 #header {
 	overflow: hidden;
+	background-image: url("../images/cover.jpg");
+	background-size: cover;
 }
 
-
+/*NAVEGACION*/
 #nav ul {
 	list-style-type: none;
 	margin: 0;
@@ -41,6 +52,7 @@ body {
 }
 
 #nav li {
+	color: #FCFCFC;
 	float: left;
 	display: block;
 	padding: 15px 48px;
@@ -62,15 +74,78 @@ body {
 	background-color:  #2D2B2C;
 }
 
-#content {
-	padding: 20px;
+/*NOTICIAS*/
+.newphoto {
+	width: 25%;
+	float: left;
+	display: inline;
+	margin-right: 20px;
 }
 
+.post {
+	overflow: hidden;
+	text-align: justify;
+	margin-bottom: 20px;
+	padding: 0px 25px;
+}
+
+.post h2{
+	margin-bottom: 0;
+	margin-top: 5px;
+}
+
+.date {
+	font-size: 10px;
+	margin-bottom: 15px;
+	color: #D8DBD2;
+}
+
+#content-noticias hr {
+	border-color: rgba(23,23,25,.3);
+	border-width: thin;
+}
+
+/*ELEMENTOS*/
 hr {
-	border-color: #E84067;
 	border-color: rgba(232,64,103,.5);
 }
+a {
+	color: #E84067;
+}
 
+/*MUSICA*/
+.album {
+	overflow: hidden;
+}
+
+.album h2 {
+	margin-bottom: 0;
+	margin-top: 20px;
+}
+
+.album > img {
+	width: 25%;
+	height: 25%;
+	float: left;
+	margin: 20px;
+}
+
+#content-musica hr {
+	border-color: rgba(23,23,25,.3);
+	border-width: thin;
+}
+
+#content-musica table {
+	width: 70%;
+}
+
+#songs-container {
+	display: inline;
+}
+
+
+/*FOOTER*/
 #footer {
 	padding: 20px;
+	font-size: 10px;
 }
