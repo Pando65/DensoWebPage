@@ -3,11 +3,23 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Denso</title>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 		<link rel="stylesheet" href="./css/style.css" charset="utf-8">
 		<script src="js/jquery.js" type="text/javascript"> </script>
 		<script src="js/script.js" type="text/javascript"> </script>
 	</head>
 	<body>
+		<div id="playlist-box">
+			<span class="glyphicon glyphicon-chevron-up"></span>
+			<audio controls id="player">
+				<source src="" type="audio/mp3">
+				Your browser does not support the audio element.
+			</audio>
+			<span class="glyphicon glyphicon-step-forward" id="skipSong"></span>
+			<span class="badge" id="numSongs"> 0 </span>
+			<center><div id="playlist-hidden">
+			</div></center>
+		</div>
 		<div id=wrapper>
 			<div id=header>
 				<img id="logo" src="images/logo.png"/>
@@ -26,6 +38,12 @@
 
 			<div id="content">
 				<div id="content-noticias">
+					<nav>
+					  <ul class="pager">
+					    <li class="disabled"><a href="#">Más antiguas</a></li>
+					    <li><a href="#">Mas recientes</a></li>
+					  </ul>
+					</nav>
 				</div>
 
 				<div id="content-musica">
@@ -36,7 +54,8 @@
 				<div id="content-contacto"> </div>
 			</div>
 			<hr>
-			<div id=footer> Copyright (c) 2015 Copyright Holder All Rights Reserved. | <a href="#">Log In</a></div>
+			<div id="footer"> Copyright (c) 2015 Copyright Holder All Rights Reserved. | <a href="#">Log In</a></div>
 		</div>
+
 	</body>
 </html>

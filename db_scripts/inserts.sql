@@ -15,3 +15,8 @@ INSERT INTO Songs VALUES (3, 'Mi turno', 3, 1, '3:48', 'miturno.mp3');
 INSERT INTO Songs VALUES (4, 'No eres diferente eres especial', 4, 1, '3:47', 'noeresdiferenteerespecial.mp3');
 INSERT INTO Songs VALUES (5, 'Por que no?', 1, 2, '3:36', 'porqueno.mp3');
 INSERT INTO Songs VALUES (6, 'El tiempo que deje partir', 2, 2, '3:34', 'eltiempoquedejepartir.mp3');
+
+/* id, city, address, date, cost */
+INSERT INTO Tours VALUES (1, "Coatzacoalcos", "Bar Frida", "2015-02-14", "100");
+INSERT INTO Tours VALUES (2, "Coatzacoalcos", "Bar Frida", "2015-04-20", "100");
+INSERT INTO Tours VALUES (3, "D.F.", "Bull Dog Cafe", "2015-05-18", "399");

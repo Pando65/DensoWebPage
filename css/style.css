@@ -1,9 +1,11 @@
 /*CONENEDORES*/
 body {
 	background-color: #171719;
-	color: #DBDBDB;
+	color: #F2F2F2;
 	font-family: sans-serif;
 	font-size: 15px;
+	margin: 0;
+	margin-bottom: 15px;
 }
 
 #wrapper {
@@ -101,17 +103,22 @@ body {
 }
 
 #content-noticias hr {
-	border-color: rgba(23,23,25,.3);
+	border-color: rgba(23,23,25,.9);
 	border-width: thin;
 }
 
 /*ELEMENTOS*/
 hr {
 	border-color: rgba(232,64,103,.5);
+	margin-bottom: 0;
 }
 a {
 	color: #E84067;
 }
+.no-destacar {
+	color: #D8DBD2;
+}
+
 
 /*MUSICA*/
 .album {
@@ -128,6 +135,15 @@ a {
 	height: 25%;
 	float: left;
 	margin: 20px;
+}
+
+.song {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.song:hover {
+	color: #D8DBD2;
 }
 
 #content-musica hr {
@@ -148,4 +164,66 @@ a {
 #footer {
 	padding: 20px;
 	font-size: 10px;
+}
+
+/* Playlist */
+
+.glyphicon {
+	color: #2D2B2C;
+	margin-right: 4px;
+	cursor: pointer;
+}
+
+.badge {
+	margin-bottom: 10px;
+}
+
+#skipSong {
+	/*margin-bottom: 7px;*/
+}
+
+#playlist-box {
+	background-color: #D8DBE2;
+
+	position: fixed;
+	bottom: 0;
+
+	padding: 4px 8px 0px 8px;
+	margin-left: 64%;
+
+	border-radius: 10px 10px 0px 0px;
+}
+
+#playlist-hidden {
+	color: #2D2B2C;
+	float: none;
+}
+
+#playlist-hidden table {
+	width: 90%;
+}
+
+#playlist-hidden table tr:first-child {
+	font-weight: bold;
+}
+
+audio {
+	background-color: #D8DBE2;
+	margin: 0;
+	padding: 0;
+	width: 240px;
+}
+
+.pager {
+	margin: 0;
+	padding: 0;
+}
+
+.pager li a, .pager li a:focus {
+	background-color: #2D2B2C;
+	color: #F2F2F2;
+}
+
+.pager li a:hover {
+	background-color: #E84067;
 }

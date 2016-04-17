@@ -36,7 +36,17 @@ CREATE TABLE Songs (
 	track_number INT NOT NULL,
 	id_album INT NOT NULL,
 	duration VARCHAR(5) NOT NULL,
-	file_name VARCHAR(30) NOT NULL, faltooo
+	file_name VARCHAR(40) NOT NULL,
 	PRIMARY KEY (id),
 	FOREIGN KEY (id_album) REFERENCES Albums(id)
 )
+
+
+CREATE TABLE Tours {
+	id INT NOT NULL AUTO_INCREMENT,
+	city VARCHAR(30) NOT NULL,
+	address VARCHAR(50) NOT NULL,
+	date DATETIME NOT NULL,
+	cost INT NOT NULL,
+	PRIMARY KEY (id)
+}

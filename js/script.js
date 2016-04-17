@@ -1,6 +1,195 @@
 $(document).on("ready", function() {
+
+	// Global variables
+	var currentClickedElement;
+	var playerHasSong = false, wasPlaying = false;
+
+	// --------- AUXILIAR FUNCTIONS ----------
+
+	//function to delete any song from playlist
+	// $("#playlist-hidden").on("click", ".glyphicon-remove", function() {
+	// 	if($(this).attr("id") )
+	// });
+
+	// function for update the playlist container div
+	function updatePlaylistLayout() {
+		$("#playlist-hidden").text("");
+		$.ajax({
+			url: 'services/applicationLayer.php',
+			type: 'POST',
+			dataType: 'json',
+			data: {"action": "INIT_PLAYLIST"},
+			contentType: "application/x-www-form-urlencoded",
+			success: function(data) {
+				$("#numSongs").text(data.length);
+				if (data.length > 0) {
+					playNext(false);
+					// ajax call to fill the playlist hidden information
+					$.ajax({
+						url: 'services/applicationLayer.php',
+						type: 'POST',
+						dataType: 'json',
+						data: {"action": "GET_PLAYLIST"},
+						contentType: "application/x-www-form-urlencoded",
+						success: function(objData) {
+							var currentHTML = "", i;
+							currentHTML += "<table clas='table'>";
+							for(i = 0; i < objData.length; i++) {
+								currentHTML += "<tr id='pos-" + i + "'>";
+									currentHTML += "<td>" + (i+1) + ".   </td>";
+									currentHTML += "<td>" + objData[i].name + "</td>";
+									currentHTML += "<td> <span class='glyphicon glyphicon-remove'></span> </td>";
+								currentHTML += "</tr>";
+							}
+							currentHTML += "</table>";
+							$("#playlist-hidden").append(currentHTML);
+						},
+						error: function() {
+							alert("error loading playlist hidden information");
+						}
+					});
+				}
+				else {
+					$("#player").attr("src", "");
+					$("#playlist-hidden").text("No hay canciones en playlist");
+				}
+			},
+			error: function() {
+				alert("error loading playlist");
+			}
+		});
+	};
+
+	function removeSong() {
+		// ajax call to remove the already pleayed song
+		$.ajax({
+			url: 'services/applicationLayer.php',
+			type: 'POST',
+			dataType: 'json',
+			data: {"action": "SKIP_SONG" },
+			contentType: "application/x-www-form-urlencoded",
+			success: function(data) {
+				if(data.length > 1) {
+					//if there are songs in queue, I will play them
+					if (wasPlaying == true) {
+						playNext(true);
+					}
+					else {
+						playNext(false);
+					}
+					playerHasSong = true;
+				}
+				updatePlaylistLayout();
+			},
+			error: function() {
+				alert("error changing song");
+			}
+		});
+	};
+
+	//function for play next song
+	function playNext(autoplay) {
+		// call to get the song and erase it from the cookie
+		$.ajax({
+			url: 'services/applicationLayer.php',
+			type: 'POST',
+			dataType: 'json',
+			data: {"action": "GET_NEXT_SONG"},
+			contentType: "application/x-www-form-urlencoded",
+			success: function(data) {
+				if (autoplay == true)
+					$("#player").attr("src", "./music/" + data.file_name).trigger("play");
+				else
+					if (playerHasSong == false)
+						$("#player").attr("src", "./music/" + data.file_name);
+			},
+			error: function() {
+				alert("error playing song");
+			}
+		});
+	};
+
+
+	// ---------- LISTENER FUNCTIONS ----------
+	// NAVIGATION
 	//hiding tabs
 	$("#content-musica").hide();
+	$("#playlist-hidden").hide();
+
+	//navigation
+	$("#nav li").on("click", function(){
+		var id = $(this).attr("id");
+		var current = $(".active").first().attr("id");
+
+		$("#"+current).attr("class", "");
+		$(this).attr("class", "active");
+
+		$("#content-"+current).toggle('slow', function(){
+			$("#content-"+id).toggle('slow');
+		});
+	});
+
+
+	//PLAYLIST
+	//call for load or create cookie for playlist
+	updatePlaylistLayout();
+
+	//add song to Playlist
+	$("#content-musica").on("click", ".song", function() {
+		$.ajax({
+			url: 'services/applicationLayer.php',
+			type: 'POST',
+			dataType: 'json',
+			data: {"action": "ADD_SONG_PLAYLIST", "id": $(this).attr("id") },
+			contentType: "application/x-www-form-urlencoded",
+			success: function(data) {
+				// the first song in playlist, should be automatic played
+				// is zero because the call will return the unupdated cookie
+				if (data.length == 0 && playerHasSong == false) {
+					playNext(true);
+					playerHasSong = true;
+				}
+				updatePlaylistLayout();
+			},
+			error: function(data) {
+				alert("error adding song to playlist");
+			}
+		});
+	});
+
+	// skip a song
+	$("#skipSong").on("click", function() {
+		removeSong();
+	});
+
+	// make appear hidden content in playlist
+	$("#playlist-box > span:first-child").on("click", function(){
+		if ($("#playlist-hidden").is(":hidden"))
+			$("#playlist-box > span:first-child").attr("class", "glyphicon glyphicon-chevron-down");
+		else
+			$("#playlist-box > span:first-child").attr("class", "glyphicon glyphicon-chevron-up");
+		$("#playlist-hidden").toggle('fast');
+	});
+
+	// when the player ends
+	$('#player').on('ended', function() {
+		playerHasSong = false;
+		wasPlaying = true;
+		removeSong(); //from cookie
+	});
+
+	// when the user clicks play on a already loaded song
+	$("#player").on("play", function() {
+		playerHasSong = true;
+		wasPlaying = true;
+	});
+
+	// when the player makes a pause
+	$("#player").on("pause", function(){
+		wasPlaying = false;
+	});
+
+	//LOAD INFORMATION
 
 	//load Posts
 	$.ajax({
@@ -21,7 +210,7 @@ $(document).on("ready", function() {
 				if (i != data.length - 1)
 					currentHTML += "<hr>";
 			}
-			$("#content-noticias").append(currentHTML);
+			$("#content-noticias").prepend(currentHTML);
 		},
 		error: function() {
 			alert("error loading news");
@@ -46,9 +235,9 @@ $(document).on("ready", function() {
 					currentHTML += "<table>";
 				for(j = 1; j < data[i].length; j++) {
 						currentHTML += "<tr>";
-							currentHTML += "<td>" + data[i][j].track_number + "</td>";
-							currentHTML += "<td>" + data[i][j].name + "</td>";
-							currentHTML += "<td>" + data[i][j].duration + "</td>";
+							currentHTML += "<td class='no-destacar'>" + data[i][j].track_number + "</td>";
+							currentHTML += "<td class='song' id='song-" + data[i][j].id + "'>" + data[i][j].name + "</td>";
+							currentHTML += "<td class='no-destacar'>" + data[i][j].duration + "</td>";
 						currentHTML += "</tr>";
 				}
 					currentHTML += "</table>";
@@ -65,18 +254,10 @@ $(document).on("ready", function() {
 	});
 
 
-	//navigation
-	$("#nav li").on("click", function(){
-		var id = $(this).attr("id");
-		var current = $(".active").first().attr("id");
 
-		$("#"+current).attr("class", "");
-		$(this).attr("class", "active");
 
-		$("#content-"+current).toggle('slow', function(){
-			$("#content-"+id).toggle('slow');
-		});
-	})
+
+
 
 
 

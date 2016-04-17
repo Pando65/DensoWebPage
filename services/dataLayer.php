@@ -48,11 +48,42 @@
 						array_push($response, $innerArray);
 					}
 				}
-				return array("statusText" => "SUCCESS", "data" => $response);;
+				return array("statusText" => "SUCCESS", "data" => $response);
 			}
 		}
 	}
 
+	function getSongAction($id_song) {
+		$conn = connect();
+		if($conn != null) {
+			$id_song = intval($id_song);
+			$sql = "SELECT * FROM Songs WHERE Songs.id = $id_song";
+			$result = $conn->query($sql);
+			if($result->num_rows > 0) {
+				while($row = $result->fetch_assoc()) {
+					$response = $row;
+				}
+				return array("statusText" => "SUCCESS", "data" => $response);
+			}
+		}
+	}
 
+	function getPlaylistAction($id_array) {
+		$conn = connect();
+		if($conn != null) {
+			$response = array();
+			foreach ($id_array as $id) {
+				$id_song = intval($id);
+				$sql = "SELECT * FROM Songs WHERE Songs.id = $id_song";
+				$result = $conn->query($sql);
+				if($result->num_rows > 0) {
+					while($row = $result->fetch_assoc()) {
+						array_push($response, $row);
+					}
+				}
+			}
+			return array("statusText" => "SUCCESS", "data" => $response);
+		}
+	}
 
 ?>
