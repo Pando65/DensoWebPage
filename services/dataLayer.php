@@ -86,4 +86,45 @@
 		}
 	}
 
+	function getToursAction() {
+		$conn = connect();
+		if($conn != null) {
+			$sql = "SELECT * FROM Tours";
+			$result = $conn->query($sql);
+			if($result->num_rows > 0) {
+				$response = array();
+				while($row = $result->fetch_assoc()) {
+					array_push($response, $row);
+				}
+				return array("statusText" => "SUCCESS", "data" => $response);
+			}
+		}
+	}
+
+	function loginAction($username, $password) {
+		$conn = connect();
+		if($conn != null) {
+			$sql = "SELECT * FROM Administrators WHERE passwrd = '$password' AND username = '$username'";
+			$result = $conn->query($sql);
+			if($result->num_rows > 0) {
+				while($row = $result->fetch_assoc()) {
+					$response = $row;
+				}
+				return array("statusText" => "SUCCESS", "data" => $response);
+			}
+		}
+	}
+
+	function addPostAction($title, $content, $id_author, $post_date, $photofile) {
+		$conn = connect();
+		if($conn != null) {
+			$id_author = intval($id_author);
+			$sql = "INSERT INTO Posts(content, cover_photo, id_author, post_date, title) VALUES
+					('$content', '$photofile', $id_author, '$post_date', '$title')";
+			if(mysqli_query($conn, $sql))
+				return array("statusText" => "SUCCESS");
+		}
+
+	}
+
 ?>

@@ -6,10 +6,27 @@ $(document).on("ready", function() {
 
 	// --------- AUXILIAR FUNCTIONS ----------
 
-	//function to delete any song from playlist
-	// $("#playlist-hidden").on("click", ".glyphicon-remove", function() {
-	// 	if($(this).attr("id") )
-	// });
+	//function for play next song
+	function playNext(autoplay) {
+		// call to get the song
+		$.ajax({
+			url: 'services/applicationLayer.php',
+			type: 'POST',
+			dataType: 'json',
+			data: {"action": "GET_NEXT_SONG"},
+			contentType: "application/x-www-form-urlencoded",
+			success: function(data) {
+				if (autoplay == true)
+					$("#player").attr("src", "./music/" + data.file_name).trigger("play");
+				else
+					if (playerHasSong == false || wasPlaying == false)
+						$("#player").attr("src", "./music/" + data.file_name);
+			},
+			error: function() {
+				alert("error playing song");
+			}
+		});
+	};
 
 	// function for update the playlist container div
 	function updatePlaylistLayout() {
@@ -50,6 +67,8 @@ $(document).on("ready", function() {
 					});
 				}
 				else {
+					playerHasSong = false;
+					wasPlaying = false;
 					$("#player").attr("src", "");
 					$("#playlist-hidden").text("No hay canciones en playlist");
 				}
@@ -87,33 +106,12 @@ $(document).on("ready", function() {
 		});
 	};
 
-	//function for play next song
-	function playNext(autoplay) {
-		// call to get the song and erase it from the cookie
-		$.ajax({
-			url: 'services/applicationLayer.php',
-			type: 'POST',
-			dataType: 'json',
-			data: {"action": "GET_NEXT_SONG"},
-			contentType: "application/x-www-form-urlencoded",
-			success: function(data) {
-				if (autoplay == true)
-					$("#player").attr("src", "./music/" + data.file_name).trigger("play");
-				else
-					if (playerHasSong == false)
-						$("#player").attr("src", "./music/" + data.file_name);
-			},
-			error: function() {
-				alert("error playing song");
-			}
-		});
-	};
-
 
 	// ---------- LISTENER FUNCTIONS ----------
 	// NAVIGATION
 	//hiding tabs
 	$("#content-musica").hide();
+	$("#content-fechas").hide();
 	$("#playlist-hidden").hide();
 
 	//navigation
@@ -131,8 +129,30 @@ $(document).on("ready", function() {
 
 
 	//PLAYLIST
-	//call for load or create cookie for playlist
+	//call to load or create cookie for playlist
 	updatePlaylistLayout();
+
+	// function to delete any song from playlist
+	$("#playlist-hidden").on("click", ".glyphicon-remove", function() {
+		if ($(this).parent().parent().attr("id") == "pos-0") {
+			removeSong();
+		}
+		else {
+			$.ajax({
+				url: 'services/applicationLayer.php',
+				type: 'POST',
+				dataType: 'json',
+				data: {"action": "REMOVE_SONG", "id": $(this).parent().parent().attr("id") },
+				contentType: "application/x-www-form-urlencoded",
+				success: function(data) {
+					updatePlaylistLayout();
+				},
+				error: function() {
+					alert("error removing song from playlist");
+				}
+			});
+		}
+	});
 
 	//add song to Playlist
 	$("#content-musica").on("click", ".song", function() {
@@ -253,7 +273,64 @@ $(document).on("ready", function() {
 		}
 	});
 
+	// load tour dates
+	$.ajax({
+		url: 'services/applicationLayer.php',
+		type: 'POST',
+		dataType: 'json',
+		data: {"action": "GET_TOURS"},
+		contentType: "application/x-www-form-urlencoded",
+		success: function(data) {
+			var currentHTML = "", i;
+			currentHTML += "<table class='table'>";
+			currentHTML += "<tr>";
+				currentHTML += "<th> Fecha / Hora </th>";
+				currentHTML += "<th> Lugar </th>";
+				currentHTML += "<th> Ciudad </th>";
+				currentHTML += "<th> Costo </th>";
+			currentHTML += "</tr>";
+			for(i = 0; i< data.length; i++) {
+				currentHTML += "<tr>";
+					currentHTML += "<td>" + data[i].date.substring(0, 16) + "</td>";
+					currentHTML += "<td>" + data[i].address + "</td>";
+					currentHTML += "<td>" + data[i].city + "</td>";
+					currentHTML += "<td> $" + data[i].cost + "</td>";
+				currentHTML += "</tr>";
+			}
+			currentHTML += "</table>";
+			$("#content-fechas").append(currentHTML);
+		},
+		error: function() {
+			alert("error loading tour dates");
+		}
+	});
 
+	// ------ LOG ING -----
+
+	//function to login
+	$("input[type=submit]").on("click", function(e){
+		e.preventDefault();
+		var username = $("input[type=text]").val();
+		var password = $("input[type=password]").val();
+		if (username != "" && password != "") {
+			$.ajax({
+				url: 'services/applicationLayer.php',
+				type: 'POST',
+				dataType: 'json',
+				data: {"action": "LOG_IN", "username": username, "password": password},
+				contentType: "application/x-www-form-urlencoded",
+				success: function() {
+					window.location.replace("admin.html");
+				},
+				error: function() {
+					alert("wrong credentials");
+				}
+			});
+		}
+		else {
+			alert("please fill all fields");
+		}
+	});
 
 
 
