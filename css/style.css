@@ -168,6 +168,10 @@ a {
 	font-size: 10px;
 }
 
+a {
+	cursor: pointer;
+}
+
 /* Playlist */
 
 .glyphicon {
@@ -248,11 +252,15 @@ form {
 	border: 1px;
 }
 
-input {
+input, textarea {
 	color: #2D2B2C;
 	border-radius: 5px;
 	border: 0;
 	margin: 3px;
+}
+
+textarea {
+	width: 285px; height: 174px;
 }
 
 input[type=submit] {

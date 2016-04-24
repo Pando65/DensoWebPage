@@ -2,9 +2,26 @@ $(document).on("ready", function() {
 
 	// Global variables
 	var currentClickedElement;
+	var pages, currentPage = 0;
 	var playerHasSong = false, wasPlaying = false;
 
 	// --------- AUXILIAR FUNCTIONS ----------
+	//function to load from pages array the current pages
+	function loadPage() {
+		$("#posts").text("");
+		var currentHTML = "", i;
+		for(i = currentPage*3; i < currentPage*3+3 && i < pages.length ; i++) {
+			currentHTML += "<div class='post'>";
+				currentHTML += "<h2>" + pages[i].title + "</h2>";
+				currentHTML += "<div class='date'> Publicado el " + pages[i].post_date.substring(0,10) + "</div>";
+				currentHTML += "<img class='newphoto' src='./images/posts/" + pages[i].cover_photo + "'/>";
+				currentHTML += pages[i].content;
+			currentHTML += "</div>";
+			if (i != currentPage*3-1 && i != pages.length - 1 && i != 2)
+				currentHTML += "<hr>";
+		}
+		$("#posts").append(currentHTML);
+	}
 
 	//function for play next song
 	function playNext(autoplay) {
@@ -112,7 +129,9 @@ $(document).on("ready", function() {
 	//hiding tabs
 	$("#content-musica").hide();
 	$("#content-fechas").hide();
+	$("#content-contacto").hide();
 	$("#playlist-hidden").hide();
+
 
 	//navigation
 	$("#nav li").on("click", function(){
@@ -127,6 +146,27 @@ $(document).on("ready", function() {
 		});
 	});
 
+
+	//CONTACTO
+	$("#content-contacto form").on("submit", function(e){
+		e.preventDefault();
+		var dataToSend = $(this).serialize();
+		$.ajax({
+			url: 'services/applicationLayer.php',
+			type: 'POST',
+			dataType: 'json',
+			data: dataToSend,
+			contentType: "application/x-www-form-urlencoded",
+			success: function(data) {
+				alert("Correo enviado!");
+				$("form input").value("");
+				$("form textarea").value("");
+			},
+			error: function() {
+				alert("problema con el correo, comunicarse a omjrrz@outlook.com");
+			}
+		})
+	});
 
 	//PLAYLIST
 	//call to load or create cookie for playlist
@@ -211,6 +251,32 @@ $(document).on("ready", function() {
 
 	//LOAD INFORMATION
 
+	$("#older").on("click", function() {
+		if($(this).attr("class") != "disabled") {
+			$("#posts").toggle('slow');
+			currentPage = currentPage + 1;
+			$("#newer").attr("class", "");
+			if((currentPage+1)*3 >= pages.length)
+				$(this).attr("class", "disabled");
+
+			loadPage();
+
+			$("#posts").toggle('slow');
+		}
+	});
+
+	$("#newer").on("click", function() {
+		if($(this).attr("class") != "disabled") {
+			$("#posts").toggle('slow');
+			currentPage = currentPage - 1;
+			$("#older").attr("class", "");
+			if( currentPage-1 < 0)
+				$(this).attr("class", "disabled");
+			loadPage();
+			$("#posts").toggle('slow');
+		}
+	});
+
 	//load Posts
 	$.ajax({
 		url: 'services/applicationLayer.php',
@@ -219,18 +285,25 @@ $(document).on("ready", function() {
 		data: {"action": "GET_POSTS"},
 		contentType: "application/x-www-form-urlencoded",
 		success: function(data) {
+			pages = data;
 			var currentHTML = "", i;
-			for(i = 0; i < data.length; i++) {
+			for(i = 0; i < 3 && i < data.length ; i++) {
 				currentHTML += "<div class='post'>";
 					currentHTML += "<h2>" + data[i].title + "</h2>";
 					currentHTML += "<div class='date'> Publicado el " + data[i].post_date.substring(0,10) + "</div>";
 					currentHTML += "<img class='newphoto' src='./images/posts/" + data[i].cover_photo + "'/>";
 					currentHTML += data[i].content;
 				currentHTML += "</div>";
-				if (i != data.length - 1)
+				if (i != 2 && i != data.length - 1)
 					currentHTML += "<hr>";
 			}
-			$("#content-noticias").prepend(currentHTML);
+			$("#posts").append(currentHTML);
+
+			// if we have more than 3 news
+			if (data.length > 3) {
+				$("#older").attr("class", "");
+			}
+
 		},
 		error: function() {
 			alert("error loading news");
@@ -308,7 +381,7 @@ $(document).on("ready", function() {
 	// ------ LOG ING -----
 
 	//function to login
-	$("input[type=submit]").on("click", function(e){
+	$("#loginbutton").on("click", function(e){
 		e.preventDefault();
 		var username = $("input[type=text]").val();
 		var password = $("input[type=password]").val();

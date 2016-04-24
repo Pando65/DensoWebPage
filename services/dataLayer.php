@@ -25,6 +25,9 @@
 				}
 				$finalResponse = array("statusText" => "SUCCESS", "data" => $response);
 				return $finalResponse;
+			} else {
+				$finalResponse = array("statusText" => "SUCCESS", "data" => array());
+				return $finalResponse;
 			}
 		}
 	}
@@ -115,6 +118,21 @@
 		}
 	}
 
+	function getAlbumsAction() {
+		$conn = connect();
+		if($conn != null) {
+			$sql = "SELECT * FROM Albums";
+			$result = $conn->query($sql);
+			if($result->num_rows > 0) {
+				$response = array();
+				while($row = $result->fetch_assoc()) {
+					array_push($response, $row);
+				}
+				return array("statusText" => "SUCCESS", "data" => $response);
+			}
+		}
+	}
+
 	function addPostAction($title, $content, $id_author, $post_date, $photofile) {
 		$conn = connect();
 		if($conn != null) {
@@ -127,4 +145,46 @@
 
 	}
 
+	function createSongAction($name, $track, $album, $duration, $filename) {
+		$conn = connect();
+		if($conn != null) {
+			$album = intval($album);
+			$track = intval($track);
+			$sql = "INSERT INTO Songs(name, track_number, id_album, duration, file_name) VALUES
+				('$name', $track, $album, '$duration', '$filename')";
+			if(mysqli_query($conn, $sql))
+				return array("statusText" => "SUCCESS");
+		}
+	}
+
+	function editPostAcion($id, $content, $cover_photo, $title) {
+		$conn = connect();
+		if($conn != null) {
+			$id = intval($id);
+			if($cover_photo != "") {
+				$sql = "UPDATE Posts SET content='$content', cover_photo='$cover_photo', title='$title'
+						WHERE id=$id";
+			}
+			else {
+				$sql = "UPDATE Posts SET content='$content', title='$title' WHERE id=$id";
+			}
+			if(mysqli_query($conn, $sql))
+				return array("statusText" => "SUCCESS");
+		}
+	}
+
+	function getPostAction($id) {
+		$conn = connect();
+		if($conn != null) {
+			$id = intval($id);
+			$sql = "SELECT * FROM Posts WHERE id = $id";
+			$result = $conn->query($sql);
+			if($result->num_rows > 0) {
+				while($row = $result->fetch_assoc()) {
+					$response = $row;
+				}
+				return array("statusText" => "SUCCESS", "data" => $response);
+			}
+		}
+	}
 ?>

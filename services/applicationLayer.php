@@ -9,6 +9,8 @@
 			break;
 		case 'GET_MUSIC': getMusic();
 			break;
+		case 'GET_ALBUMS': getAlbums();
+			break;
 		case 'ADD_SONG_PLAYLIST': addSongToPlaylist();
 			break;
 		case 'INIT_PLAYLIST': initPlaylist();
@@ -28,6 +30,14 @@
 		case 'GET_SESSION': getSessionData();
 			break;
 		case 'ADD_POST': addPost();
+			break;
+		case 'SEND_EMAIL': sendEmail();
+			break;
+		case 'UPLOAD_SONG': uploadSong();
+			break;
+		case 'EDIT_POST': editPost();
+			break;
+		case 'GET_POST': getPost();
 			break;
 		default: break;
 	}
@@ -63,6 +73,17 @@
 
 	function getMusic() {
 		$response = getMusicAction();
+		if($response['statusText'] == "SUCCESS") {
+			echo json_encode($response["data"]);
+		}
+		else {
+			header('HTTP/1.1 406 Problem with database');
+			die(json_encode(array("message" => "ERROR", "code" => 1330)));
+		}
+	}
+
+	function getAlbums() {
+		$response = getAlbumsAction();
 		if($response['statusText'] == "SUCCESS") {
 			echo json_encode($response["data"]);
 		}
@@ -219,6 +240,109 @@
 								echo json_encode("SUCCESS");
 							}
 			    }
+			}
+		}
+	}
+
+	function uploadSong() {
+		if(isSessionActive()) {
+			$target_dir = "../music/";
+			$target_file = $target_dir . basename($_FILES["songfile"]["name"]);
+			$uploadOk = 1;
+			$FileType = pathinfo($target_file,PATHINFO_EXTENSION);
+			$target_file = $target_dir . preg_replace('/\s+/', '', $_POST["name"]) . "." . $FileType;
+			$filename = preg_replace('/\s+/', '', $_POST["name"]) . "." . $FileType;
+
+			// Allow certain file formats
+			if($FileType != "mp3" ) {
+			    echo "Sorry, only MP3 files are allowed.";
+			    $uploadOk = 0;
+			}
+			// Check if $uploadOk is set to 0 by an error
+			if ($uploadOk == 1) {
+			    if (move_uploaded_file($_FILES["songfile"]["tmp_name"], $target_file)) {
+						$duration = $_POST["durmin"] . ":" . $_POST["dursec"];
+						$response = createSongAction($_POST["name"], $_POST["track"], $_POST["album"], $duration, $filename);
+						if($response["statusText"] == "SUCCESS") {
+							echo json_encode("SUCCESS");
+						}
+			   	}
+			}
+
+		}
+	}
+
+	function sendEmail() {
+		$to = $_POST["email"];
+		$subject = "Contacto de Sitio Denso";
+		$txt = $_POST["message"];
+		$headers = "From: omjrrz@outlook.com";
+
+		mail($to,$subject,$txt,$headers);
+		echo json_encode("SUCCESS");
+	}
+
+	function editPost() {
+		if(isSessionActive()) {
+			if(isset($_FILES["coverphoto"]) && $_FILES["coverphoto"]["name"] != "") {
+				$target_dir = "../images/posts/";
+				$target_file = $target_dir . basename($_FILES["coverphoto"]["name"]);
+				$uploadOk = 1;
+				$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+				$target_file = $target_dir . preg_replace('/\s+/', '', $_POST["title"]) . "." . $imageFileType;
+				$filename = preg_replace('/\s+/', '', $_POST["title"]) . "." . $imageFileType;
+				// Check if image file is a actual image or fake image
+				if(isset($_POST["submit"])) {
+				    $check = getimagesize($_FILES["coverphoto"]["tmp_name"]);
+				    if($check !== false) {
+				        // echo "File is an image - " . $check["mime"] . ".";
+				        $uploadOk = 1;
+				    } else {
+				        echo "File is not an image.";
+				        $uploadOk = 0;
+				    }
+				}
+				// Check if file already exists
+				// if (file_exists($target_file)) {
+				//     echo "Sorry, file already exists.";
+				//     $uploadOk = 0;
+				// }
+				// Check file size
+				if ($_FILES["fileToUpload"]["size"] > 500000) {
+				    echo "Sorry, your file is too large.";
+				    $uploadOk = 0;
+				}
+				// Allow certain file formats
+				if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+				&& $imageFileType != "gif" ) {
+				    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+				    $uploadOk = 0;
+				}
+				// Check if $uploadOk is set to 0 by an error
+				if ($uploadOk == 1) {
+				    if (move_uploaded_file($_FILES["coverphoto"]["tmp_name"], $target_file)) {
+								$timestamp = date('Y-m-d H:i:s');
+				        $response = editPostAcion(substr($_POST["id"], 4), $_POST["content"], $filename, $_POST["title"]);
+								if($response["statusText"] == "SUCCESS") {
+									echo json_encode("SUCCESS");
+								}
+				    }
+				}
+			}
+			else {
+				$response = editPostAcion(substr($_POST["id"], 4), $_POST["content"], "", $_POST["title"]);
+				if($response["statusText"] == "SUCCESS") {
+					echo json_encode("SUCCESS");
+				}
+			}
+		}
+	}
+
+	function getPost() {
+		if(isSessionActive()) {
+			$response = getPostAction(substr($_POST["id"], 4));
+			if($response["statusText"] == "SUCCESS") {
+				echo json_encode($response["data"]);
 			}
 		}
 	}

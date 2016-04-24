@@ -42,11 +42,21 @@ CREATE TABLE Songs (
 )
 
 
-CREATE TABLE Tours {
+CREATE TABLE Tours (
 	id INT NOT NULL AUTO_INCREMENT,
 	city VARCHAR(30) NOT NULL,
 	address VARCHAR(50) NOT NULL,
 	date DATETIME NOT NULL,
 	cost INT NOT NULL,
 	PRIMARY KEY (id)
-}
+)
+
+CREATE TABLE Members (
+		id INT NOT NULL AUTO_INCREMENT,
+		fname VARCHAR(50) NOT NULL,
+		lname VARCHAR(50) NOT NULL,
+		birth_date DATETIME NOT NULL,
+		instruments VARCHAR() NOT NULL,
+		member_since DATETIME NOT NULL,
+		biography TEXT NOT NULL
+)
