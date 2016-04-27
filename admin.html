@@ -29,7 +29,7 @@
 				      <li id="add-1"><a href="#"> Noticia </a></li>
 							<li id="add-2"><a href="#"> Album </a></li>
 							<li id="add-3"><a href="#"> Cancion </a></li>
-							<li id="add-4"><a href="#"> Fecha </a></li>
+							<li id="add-4"><a href="#"> Fecha de Concierto </a></li>
 							<li id="add-5"><a href="#"> Miembro </a></li>
 				    </ul>
 				  </li>
@@ -42,7 +42,7 @@
 				      <li id="edt-1"><a href="#"> Noticia </a></li>
 							<li id="edt-2"><a href="#"> Album </a></li>
 							<li id="edt-3"><a href="#"> Cancion </a></li>
-							<li id="edt-4"><a href="#"> Fecha </a></li>
+							<li id="edt-4"><a href="#"> Fecha de Concierto</a></li>
 							<li id="edt-5"><a href="#"> Miembro </a></li>
 							<li id="edt-6"><a href="#"> Informacion de contacto </a></li>
 				    </ul>
@@ -56,7 +56,7 @@
 				      <li><a href="#"> Noticia </a></li>
 							<li><a href="#"> Album </a></li>
 							<li><a href="#"> Cancion </a></li>
-							<li><a href="#"> Fecha </a></li>
+							<li><a href="#"> Fecha de Concierto</a></li>
 							<li><a href="#"> Miembro </a></li>
 				    </ul>
 				  </li>
@@ -73,15 +73,15 @@
 					    </div>
 					  </div>
 					  <div class="form-group">
-					    <label class="control-label col-sm-1">Contenido:</label>
+					    <label class="control-label col-sm-0">Contenido:</label>
 					    <div class="col-sm-11">
-					      <textarea cols="30" name="content"></textarea required>
+					      <textarea cols="30" name="content" style="width: 363px; height: 174px;"></textarea required>
 					    </div>
 					  </div>
 						<div class="form-group">
 					    <label class="control-label col-sm-2">Foto:</label>
 					    <div class="col-sm-10">
-					      <input type="file" name="coverphoto" class="form-control">
+					      <input type="file" name="coverphoto" class="form-control" required>
 					    </div>
 					  </div>
 						<input type="hidden" name="action" value="ADD_POST">
@@ -106,7 +106,7 @@
 					    </div>
 					  </div>
 						<div class="form-group">
-					    <label class="control-label col-sm-2">Cancion:</label>
+					    <label class="control-label col-sm-2">#Cancion:</label>
 					    <div class="col-sm-10">
 					      <input type="number" name="track" class="form-control" min="1" required>
 					    </div>
@@ -140,10 +140,53 @@
 					</form>
 				</div>
 
-				<!-- edit post -->
-				<div id="edtContainer-1">
-
+				<!-- add tour date -->
+				<div id="addContainer-4">
+					<form class="form-horizontal" role="form">
+					  <div class="form-group">
+					    <label class="control-label col-sm-2">Ciudad:</label>
+					    <div class="col-sm-10">
+					      <input type="text" name="city" class="form-control" required>
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label class="control-label col-sm-2">Dirección:</label>
+					    <div class="col-sm-10">
+					      <input type="text" name="address" class="form-control" required>
+					    </div>
+					  </div>
+						<div class="form-group">
+					    <label class="control-label col-sm-2">Fecha:</label>
+					    <div class="col-sm-10">
+					      <input type="date" name="date" class="form-control">
+					    </div>
+					  </div>
+						<div class="form-group">
+					    <label class="control-label col-sm-2">Hora:</label>
+					    <div class="col-sm-10">
+					      <input type="time" name="time" class="form-control">
+					    </div>
+					  </div>
+						<div class="form-group">
+					    <label class="control-label col-sm-2">Costo:</label>
+					    <div class="col-sm-10">
+					      <input type="text" name="cost" class="form-control">
+					    </div>
+					  </div>
+						<input type="hidden" name="action" value="ADD_TOUR">
+					  <div class="form-group">
+					    <div class="col-sm-offset-2 col-sm-10">
+					      <input type="submit" class="btn btn-default" name="submit" value="Submit"/>
+					    </div>
+					  </div>
+					</form>
 				</div>
+
+				<!-- edit post -->
+				<div id="edtContainer-1"></div>
+
+				<!-- edit tour date -->
+				<div id="edtContainer-4"></div>
 
 			</div>
 

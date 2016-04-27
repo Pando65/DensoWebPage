@@ -187,4 +187,31 @@
 			}
 		}
 	}
+
+	function getTourAction($id) {
+		$conn = connect();
+		if($conn != null) {
+			$id = intval($id);
+			$sql = "SELECT * FROM Tours WHERE id = $id";
+			$result = $conn->query($sql);
+			if($result->num_rows > 0) {
+				while($row = $result->fetch_assoc()) {
+					$response = $row;
+				}
+				return array("statusText" => "SUCCESS", "data" => $response);
+			}
+		}
+	}
+
+	function editTourAction($id, $city, $address, $datetime, $cost) {
+		$conn = connect();
+		if($conn != null) {
+			$id = intval($id);
+			$sql = "UPDATE Tours SET city='$city', address='$address', date='$datetime', cost='$cost'
+					WHERE id = $id";
+			if(mysqli_query($conn, $sql))
+				return array("statusText" => "SUCCESS");
+		}
+	}
+
 ?>

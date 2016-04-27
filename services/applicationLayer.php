@@ -39,6 +39,10 @@
 			break;
 		case 'GET_POST': getPost();
 			break;
+		case 'GET_TOUR': getTour();
+			break;
+		case 'EDIT_TOUR': editTour();
+			break;
 		default: break;
 	}
 
@@ -322,7 +326,7 @@
 				if ($uploadOk == 1) {
 				    if (move_uploaded_file($_FILES["coverphoto"]["tmp_name"], $target_file)) {
 								$timestamp = date('Y-m-d H:i:s');
-				        $response = editPostAcion(substr($_POST["id"], 4), $_POST["content"], $filename, $_POST["title"]);
+				        $response = editPostAcion($_POST["id"], $_POST["content"], $filename, $_POST["title"]);
 								if($response["statusText"] == "SUCCESS") {
 									echo json_encode("SUCCESS");
 								}
@@ -330,7 +334,7 @@
 				}
 			}
 			else {
-				$response = editPostAcion(substr($_POST["id"], 4), $_POST["content"], "", $_POST["title"]);
+				$response = editPostAcion($_POST["id"], $_POST["content"], "", $_POST["title"]);
 				if($response["statusText"] == "SUCCESS") {
 					echo json_encode("SUCCESS");
 				}
@@ -344,6 +348,25 @@
 			if($response["statusText"] == "SUCCESS") {
 				echo json_encode($response["data"]);
 			}
+		}
+	}
+
+	function getTour() {
+		if(isSessionActive()) {
+			$response = getTourAction(substr($_POST["id"], 5));
+			if($response["statusText"] == "SUCCESS") {
+				echo json_encode($response["data"]);
+			}
+		}
+	}
+
+	function editTour() {
+		if(isSessionActive()) {
+			$datetime = $_POST["date"] . " " . $_POST["time"];
+			$response = editTourAction($_POST["id"], $_POST["city"], $_POST["address"], $datetime, $_POST["cost"]);
+			if($response["statusText"] == "SUCCESS") {
+				echo json_encode($response["data"]);
+			}			
 		}
 	}
 
