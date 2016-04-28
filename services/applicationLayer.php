@@ -286,12 +286,11 @@
 	}
 
 	function sendEmail() {
-		$to = $_POST["email"];
+		$to = "omjrrz@outlook.com";
 		$subject = "Contacto de Sitio Denso";
-		$txt = $_POST["message"];
-		$headers = "From: omjrrz@outlook.com";
+		$txt = "Mensaje de" . $_POST["name"] . " Correo: " . $_POST["email"] . " Mensaje " . $_POST["message"];
 
-		mail($to,$subject,$txt,$headers);
+		mail($to,$subject,$txt);
 		echo json_encode("SUCCESS");
 	}
 
