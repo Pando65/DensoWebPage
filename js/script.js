@@ -130,6 +130,7 @@ $(document).on("ready", function() {
 	$("#content-musica").hide();
 	$("#content-fechas").hide();
 	$("#content-contacto").hide();
+	$("#content-miembros").hide();
 	$("#playlist-hidden").hide();
 
 
@@ -343,6 +344,30 @@ $(document).on("ready", function() {
 		},
 		error: function() {
 			alert("error loading music");
+		}
+	});
+
+	// load members information
+	$.ajax({
+		url: 'services/applicationLayer.php',
+		type: 'POST',
+		dataType: 'json',
+		data: {"action": "GET_MEMBERS"},
+		contentType: "application/x-www-form-urlencoded",
+		success: function(data) {
+			var currentHTML = "", i;
+			for(i=0; i<data.length; i++) {
+				currentHTML += "<div class='member'>";
+					currentHTML += "<img src='./images/members/" + data[i].profile_picture + "'/>";
+					currentHTML += "<h4>" + data[i].fname + " " + data[i].lname + "</h4>";
+					currentHTML += data[i].instruments + "<br>";
+					currentHTML += data[i].biography;
+				currentHTML += "</div>";
+			}
+			$("#content-miembros").append(currentHTML);
+		},
+		error: function() {
+			alert("error loading members information");
 		}
 	});
 

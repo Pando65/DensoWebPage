@@ -18,6 +18,20 @@ $(document).on("ready", function(){
 		}
 	});
 
+	//log out
+	$("#logoutbtn").on("click", function(){
+		$.ajax({
+			url: 'services/applicationLayer.php',
+			type: 'POST',
+			dataType: 'json',
+			data: {"action": "REMOVE_SESSION"},
+			contentType: "application/x-www-form-urlencoded",
+			success: function(data) {
+				window.location.replace("index.html");
+			}
+		});
+	});
+
 	function cleanFields() {
 		$("input[type=text]").val("");
 		$("input[type=number]").val("");
@@ -29,8 +43,10 @@ $(document).on("ready", function(){
 	$("#addContainer-2").hide();
 	$("#addContainer-3").hide();
 	$("#addContainer-4").hide();
+	$("#addContainer-5").hide();
 	$("#edtContainer-1").hide();
 	$("#edtContainer-4").hide();
+	$("#edtContainer-5").hide();
 
 	//navigation
 	$(".dropdown-menu li").on("click", function(){
@@ -43,7 +59,14 @@ $(document).on("ready", function(){
 			//some changes we have to do
 			$("#addContainer-1 input[type=hidden]").attr("value", "ADD_POST");
 			$("#addContainer-1 input[type=file]").attr("required", true);
+			$("#addContainer-1 h3").text("Añadir noticia");
+
+			$("#addContainer-5 input[type=hidden]").attr("value", "ADD_POST");
+			$("#addContainer-5 input[type=file]").attr("required", true);
+			$("#addContainer-5 h3").text("Añadir miembro");
+
 			$("#addContainer-4 input[type=hidden]").attr("value", "ADD_TOUR");
+			$("#addContainer-4 h3").text("Añadir fecha de concierto");
 		}
 		if ($action == "edt") {
 			$("#edtContainer-" + $(this).attr('id').substring(4, 5)).toggle();
@@ -53,30 +76,8 @@ $(document).on("ready", function(){
 		cleanFields();
 	});
 
-	// //add or edit post
-	// $("#addContainer-1 form, #addContainer-4 form").on("submit", function(e){
-	// 	e.preventDefault();
-	// 	var form = new FormData($(this)[0]);
-	// 	$.ajax({
-	// 		url: 'services/applicationLayer.php',
-	// 		type: 'POST',
-	// 		dataType: 'json',
-	// 		data: form,
-	// 		// contentType: "application/x-www-form-urlencoded",
-	// 		success: function(data) {
-	// 			alert("Post publicado exitosamente");
-	// 			window.location.replace("admin.html");
-	// 		},
-	// 		error: function(data) {
-	// 			alert("Error adding the post");
-	// 		},
-	// 		cache: false,
-	// 		contentType: false,
-	// 	 	processData: false
-	// 	});
-	// });
 
-	//add new resource
+	//add new resource (anyone)
 	$("form").on("submit", function(e) {
 		var form = new FormData($(this)[0]);
 		e.preventDefault();
@@ -167,6 +168,27 @@ $(document).on("ready", function(){
 		}
 	});
 
+	//load members to edit container
+	$.ajax({
+		url: 'services/applicationLayer.php',
+		type: 'POST',
+		dataType: 'json',
+		data: {"action": "GET_MEMBERS"},
+		contentType: "application/x-www-form-urlencoded",
+		success: function(data) {
+			var currentHTML="", i;
+			currentHTML += "<table class='table'>";
+			for(i = 0; i<data.length;i++) {
+				currentHTML += "<tr id='edt5-" + data[i].id + "'>";
+				currentHTML += "<td>" + data[i].fname + " " + data[i].lname + "</td>";
+				currentHTML += "<td> <a class='modif5Button'>Modificar</a> </td>";
+				currentHTML += "</tr>";
+			}
+			currentHTML += "</table>";
+			$("#edtContainer-5").append(currentHTML);
+		}
+	});
+
 	//open form to modify a posts
 	$("#edtContainer-1").on("click", ".modif1Button", function(){
 		$(currentSection).hide();
@@ -182,6 +204,7 @@ $(document).on("ready", function(){
 			success: function(data) {
 				$("#addContainer-1 input[type=hidden]").attr("value", "EDIT_POST");
 				$('#addContainer-1 input[type=file]').removeAttr('required');
+				$("#addContainer-1 h3").text("Modificar noticia");
 				$("#addContainer-1 form").append("<input type='hidden' name='id' value='"+ data.id +"'>")
 				$("#addContainer-1 input").first().val(data.title);
 				$("#addContainer-1 textarea").first().val(data.content);
@@ -192,6 +215,38 @@ $(document).on("ready", function(){
 			}
 		})
 	});
+
+	//open form to modify a member of the band
+	$("#edtContainer-5").on("click", ".modif5Button", function(){
+		$(currentSection).hide();
+		currentSection = "#addContainer-5";
+		$(currentSection).toggle();
+		currentClickedElement = $(this);
+		$.ajax({
+			url: 'services/applicationLayer.php',
+			type: 'POST',
+			dataType: 'json',
+			data: {"action": "GET_MEMBER", "id": $(this).parent().parent().attr("id")},
+			contentType: "application/x-www-form-urlencoded",
+			success: function(data) {
+				$("#addContainer-5 input").eq(0).val(data.fname);
+				$("#addContainer-5 input").eq(1).val(data.lname);
+				$("#addContainer-5 input").eq(2).val(data.birth_date);
+				$("#addContainer-5 input").eq(3).val(data.instruments);
+				$("#addContainer-5 input").eq(4).val(data.member_since);
+				$("#addContainer-5 textarea").first().val(data.biography);
+
+				$("#addContainer-5 input[type=hidden]").attr("value", "EDIT_MEMBER");
+				$("#addContainer-5 h3").text("Modificar miembro de la banda");
+				$('#addContainer-5 input[type=file]').removeAttr('required');
+				$("#addContainer-5 form").append("<input type='hidden' name='id' value='"+ data.id +"'>");
+			},
+			error: function() {
+				alert("error retrieving members data for edit");
+			}
+		});
+	});
+
 
 	//open form to modify tour dates
 	$("#edtContainer-4").on("click", ".modif4Button", function() {
@@ -214,7 +269,8 @@ $(document).on("ready", function(){
 				$("#addContainer-4 input").eq(4).val(data.cost);
 
 				$("#addContainer-4 input[type=hidden]").attr("value", "EDIT_TOUR");
-				$("#addContainer-4 form").append("<input type='hidden' name='id' value='"+ data.id +"'>")
+				$("#addContainer-4 h3").text("Modificar fecha de concierto");
+				$("#addContainer-4 form").append("<input type='hidden' name='id' value='"+ data.id +"'>");
 
 			},
 			error: function() {

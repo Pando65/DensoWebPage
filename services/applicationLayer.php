@@ -43,6 +43,14 @@
 			break;
 		case 'EDIT_TOUR': editTour();
 			break;
+		case 'REMOVE_SESSION': destroySession();
+			break;
+		case 'GET_MEMBERS': getMembers();
+			break;
+		case 'GET_MEMBER': getMember();
+			break;
+		case 'EDIT_MEMBER': editMember();
+			break;
 		default: break;
 	}
 
@@ -55,6 +63,7 @@
 	function destroySession() {
 		session_start();
 		session_destroy();
+		echo json_encode("SUCCESS");
 	}
 
 	function isSessionActive() {
@@ -286,6 +295,57 @@
 		echo json_encode("SUCCESS");
 	}
 
+	function editMember() {
+		if(isSessionActive()) {
+			if(isset($_FILES["coverphoto"]) && $_FILES["coverphoto"]["name"] != "") {
+				$target_dir = "../images/members/";
+				$target_file = $target_dir . basename($_FILES["coverphoto"]["name"]);
+				$uploadOk = 1;
+				$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+				$target_file = $target_dir . $_POST["id"] . preg_replace('/\s+/', '', $_POST["fname"]) . "." . $imageFileType;
+				$filename = $_POST["id"] . preg_replace('/\s+/', '', $_POST["fname"]) . "." . $imageFileType;
+				// Check if image file is a actual image or fake image
+				if(isset($_POST["submit"])) {
+				    $check = getimagesize($_FILES["coverphoto"]["tmp_name"]);
+				    if($check !== false) {
+				        // echo "File is an image - " . $check["mime"] . ".";
+				        $uploadOk = 1;
+				    } else {
+				        echo "File is not an image.";
+				        $uploadOk = 0;
+				    }
+				}
+				if ($_FILES["fileToUpload"]["size"] > 500000) {
+				    echo "Sorry, your file is too large.";
+				    $uploadOk = 0;
+				}
+				// Allow certain file formats
+				if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+				&& $imageFileType != "gif" ) {
+				    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+				    $uploadOk = 0;
+				}
+				// Check if $uploadOk is set to 0 by an error
+				if ($uploadOk == 1) {
+				    if (move_uploaded_file($_FILES["coverphoto"]["tmp_name"], $target_file)) {
+				        $response = editMemberAcion($_POST["id"], $_POST["fname"],$_POST["lname"],$_POST["birth_date"],
+										$_POST["instruments"], $_POST["member_since"], $_POST["biography"], $filename);
+								if($response["statusText"] == "SUCCESS") {
+									echo json_encode("SUCCESS");
+								}
+				    }
+				}
+			}
+			else {
+				$response = editMemberAcion($_POST["id"], $_POST["fname"],$_POST["lname"],$_POST["birth_date"],
+						$_POST["instruments"], $_POST["member_since"], $_POST["biography"], "");
+				if($response["statusText"] == "SUCCESS") {
+					echo json_encode("SUCCESS");
+				}
+			}
+		}
+	}
+
 	function editPost() {
 		if(isSessionActive()) {
 			if(isset($_FILES["coverphoto"]) && $_FILES["coverphoto"]["name"] != "") {
@@ -306,12 +366,7 @@
 				        $uploadOk = 0;
 				    }
 				}
-				// Check if file already exists
-				// if (file_exists($target_file)) {
-				//     echo "Sorry, file already exists.";
-				//     $uploadOk = 0;
-				// }
-				// Check file size
+
 				if ($_FILES["fileToUpload"]["size"] > 500000) {
 				    echo "Sorry, your file is too large.";
 				    $uploadOk = 0;
@@ -366,7 +421,23 @@
 			$response = editTourAction($_POST["id"], $_POST["city"], $_POST["address"], $datetime, $_POST["cost"]);
 			if($response["statusText"] == "SUCCESS") {
 				echo json_encode($response["data"]);
-			}			
+			}
+		}
+	}
+
+	function getMembers() {
+		$response = getMembersAction();
+		if($response["statusText"] == "SUCCESS") {
+			echo json_encode($response["data"]);
+		}
+	}
+
+	function getMember() {
+		if(isSessionActive()) {
+			$response = getMemberAction(substr($_POST["id"], 5));
+			if($response["statusText"] == "SUCCESS") {
+				echo json_encode($response["data"]);
+			}
 		}
 	}
 

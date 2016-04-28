@@ -55,8 +55,10 @@ CREATE TABLE Members (
 		id INT NOT NULL AUTO_INCREMENT,
 		fname VARCHAR(50) NOT NULL,
 		lname VARCHAR(50) NOT NULL,
-		birth_date DATETIME NOT NULL,
-		instruments VARCHAR() NOT NULL,
-		member_since DATETIME NOT NULL,
-		biography TEXT NOT NULL
+		birth_date DATE NOT NULL,
+		instruments VARCHAR(50) NOT NULL,
+		member_since DATE NOT NULL,
+		biography TEXT NOT NULL,
+		profile_picture VARCHAR(50) NOT NULL,
+		PRIMARY KEY (id)
 )

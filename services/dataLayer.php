@@ -173,6 +173,25 @@
 		}
 	}
 
+	function editMemberAcion($id, $fname, $lname, $bdate, $instruments, $member_since, $biography, $file) {
+		$conn = connect();
+		if($conn != null) {
+			$id = intval($id);
+			if($file != "") {
+				$sql = "UPDATE Members SET fname='$fname', lname='$lname', birth_date='$bdate',
+						instruments='$instruments', member_since='$member_since', biography='$biography',
+						profile_picture='$file' WHERE id=$id";
+			}
+			else {
+				$sql = "UPDATE Members SET fname='$fname', lname='$lname', birth_date='$bdate',
+						instruments='$instruments', member_since='$member_since', biography='$biography'
+						WHERE id=$id";
+			}
+			if(mysqli_query($conn, $sql))
+				return array("statusText" => "SUCCESS");
+		}
+	}
+
 	function getPostAction($id) {
 		$conn = connect();
 		if($conn != null) {
@@ -212,6 +231,36 @@
 			if(mysqli_query($conn, $sql))
 				return array("statusText" => "SUCCESS");
 		}
+	}
+
+	function getMembersAction() {
+		$conn = connect();
+		if($conn != null) {
+			$sql = "SELECT * FROM Members";
+			$result = $conn->query($sql);
+			if($result->num_rows > 0) {
+				$response = array();
+				while($row = $result->fetch_assoc()) {
+					array_push($response, $row);
+				}
+				return array("statusText" => "SUCCESS", "data" => $response);
+			}
+		}
+	}
+
+	function getMemberAction($id) {
+		$conn = connect();
+		if($conn != null) {
+			$id = intval($id);
+			$sql = "SELECT * FROM Members WHERE id = $id";
+			$result = $conn->query($sql);
+			if($result->num_rows > 0) {
+				while($row = $result->fetch_assoc())
+					$response = $row;
+				return array("statusText" => "SUCCESS", "data" => $response);
+			}
+		}
+
 	}
 
 ?>

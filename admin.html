@@ -60,12 +60,13 @@
 							<li><a href="#"> Miembro </a></li>
 				    </ul>
 				  </li>
-					<li role="presentation"><a href="#"> Cerrar Sesión </a></li>
+					<li role="presentation"><a href="#" id="logoutbtn"> Cerrar Sesión </a></li>
 				</ul>
 
 				<!-- add news -->
 				<div id="addContainer-1">
 					<form class="form-horizontal" role="form" enctype="multipart/form-data">
+						<h3> Añadir noticia </h3>
 					  <div class="form-group">
 					    <label class="control-label col-sm-2">Titulo:</label>
 					    <div class="col-sm-10">
@@ -75,7 +76,7 @@
 					  <div class="form-group">
 					    <label class="control-label col-sm-0">Contenido:</label>
 					    <div class="col-sm-11">
-					      <textarea cols="30" name="content" style="width: 363px; height: 174px;"></textarea required>
+					      <textarea cols="30" name="content" style="width: 363px; height: 174px;" required></textarea>
 					    </div>
 					  </div>
 						<div class="form-group">
@@ -99,6 +100,7 @@
 				<!-- add cancion -->
 				<div id="addContainer-3">
 					<form class="form-horizontal" role="form" enctype="multipart/form-data">
+						<h3> Añadir canción </h3>
 					  <div class="form-group">
 					    <label class="control-label col-sm-2">Titulo:</label>
 					    <div class="col-sm-10">
@@ -143,6 +145,7 @@
 				<!-- add tour date -->
 				<div id="addContainer-4">
 					<form class="form-horizontal" role="form">
+						<h3> Añadir fecha de concierto </h3>
 					  <div class="form-group">
 					    <label class="control-label col-sm-2">Ciudad:</label>
 					    <div class="col-sm-10">
@@ -158,19 +161,19 @@
 						<div class="form-group">
 					    <label class="control-label col-sm-2">Fecha:</label>
 					    <div class="col-sm-10">
-					      <input type="date" name="date" class="form-control">
+					      <input type="date" name="date" class="form-control" required>
 					    </div>
 					  </div>
 						<div class="form-group">
 					    <label class="control-label col-sm-2">Hora:</label>
 					    <div class="col-sm-10">
-					      <input type="time" name="time" class="form-control">
+					      <input type="time" name="time" class="form-control" required>
 					    </div>
 					  </div>
 						<div class="form-group">
 					    <label class="control-label col-sm-2">Costo:</label>
 					    <div class="col-sm-10">
-					      <input type="text" name="cost" class="form-control">
+					      <input type="text" name="cost" class="form-control" required>
 					    </div>
 					  </div>
 						<input type="hidden" name="action" value="ADD_TOUR">
@@ -182,11 +185,69 @@
 					</form>
 				</div>
 
+				<!-- add member -->
+				<div id="addContainer-5">
+					<form class="form-horizontal" role="form" enctype="multipart/form-data">
+						<h3> Añadir miembro </h3>
+						<div class="form-group">
+							<label class="control-label col-sm-2">Nombre:</label>
+							<div class="col-sm-10">
+								<input type="text" name="fname" class="form-control" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-2">Apellidos:</label>
+							<div class="col-sm-10">
+								<input type="text" name="lname" class="form-control" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">Nacimiento:</label>
+							<div class="col-sm-9">
+								<input type="date" name="birth_date" class="form-control" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">Instrumento:</label>
+							<div class="col-sm-9">
+								<input type="text" name="instruments" class="form-control" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-2">Miembro desde:</label>
+							<div class="col-sm-10">
+								<input type="date" name="member_since" class="form-control" required>
+							</div>
+						</div>
+						<div class="form-group">
+					    <label class="control-label col-sm-0">Biografía:</label>
+					    <div class="col-sm-11">
+					      <textarea cols="30" name="biography" style="width: 363px; height: 174px;" required></textarea>
+					    </div>
+					  </div>
+						<div class="form-group">
+					    <label class="control-label col-sm-2">Foto:</label>
+					    <div class="col-sm-10">
+					      <input type="file" name="coverphoto" class="form-control" required>
+					    </div>
+					  </div>
+						<input type="hidden" name="action" value="ADD_MEMBER">
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<input type="submit" class="btn btn-default" name="submit" value="Submit"/>
+							</div>
+						</div>
+					</form>
+				</div>
+
 				<!-- edit post -->
 				<div id="edtContainer-1"></div>
 
 				<!-- edit tour date -->
 				<div id="edtContainer-4"></div>
+
+				<!-- edit member -->
+				<div id="edtContainer-5"></div>
 
 			</div>
 
